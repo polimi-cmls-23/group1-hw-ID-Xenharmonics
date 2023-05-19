@@ -55,7 +55,7 @@ namespace Parameters
 		std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
 
 		params.push_back(std::make_unique<juce::AudioParameterFloat>(NAME_ST1, "Semitones Voice1", -12.0f, 12.0f, DEFAULT_ST));
-		params.push_back(std::make_unique<juce::AudioParameterFloat>(NAME_DT1, "Delay time (s) Voice1", juce::NormalisableRange<float>(0.0f, MAX_DELAY_TIME, 0.001f, 0.3f), DEFAULT_DT));
+		params.push_back(std::make_unique<juce::AudioParameterFloat>(NAME_DT1, "Delay time (s) Voice1", juce::NormalisableRange<float>(0.0f, MAX_DELAY_TIME, 0.01f),/*, 0.3f),*/ DEFAULT_DT));
 		params.push_back(std::make_unique<juce::AudioParameterFloat>(NAME_FB1, "Feedback Voice1", 0.0f, 1.0f, DEFAULT_FB));
 
 		params.push_back(std::make_unique<juce::AudioParameterFloat>(NAME_FREQ, "LFO Freq (Hz)", juce::NormalisableRange<float>(0.1f, 20.0f, 0.01f, 0.3f), DEFAULT_FREQ));

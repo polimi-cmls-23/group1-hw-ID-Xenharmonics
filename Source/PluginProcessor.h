@@ -9,8 +9,11 @@
 #include "Filter.h"
 #include "PitchShift.h"
 #include "Parameters.h"
+#include <string>
 
-class HarmonizerAudioProcessor  : public juce::AudioProcessor, public juce::AudioProcessorValueTreeState::Listener
+class HarmonizerAudioProcessor  : public juce::AudioProcessor, public juce::AudioProcessorValueTreeState::Listener, 
+                               public OSCReceiver,
+                               public OSCReceiver::ListenerWithOSCAddress<OSCReceiver::MessageLoopCallback>
 {
 public:
     //==============================================================================
@@ -20,6 +23,8 @@ public:
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
+    
+    void oscMessageReceived (const OSCMessage &message) override;
 
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 

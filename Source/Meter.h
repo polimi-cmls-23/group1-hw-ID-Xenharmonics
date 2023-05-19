@@ -13,7 +13,8 @@
 
 #define FPS       25
 #define DB_FLOOR -48.0f
-#define RT        0.5f
+#define RT         0.5f
+
 
 #define BORDER_WIDTH 1.5f
 #define SCALE_TO_KNOB_RATIO 0.85f
