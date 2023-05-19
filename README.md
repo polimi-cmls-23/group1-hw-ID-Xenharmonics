@@ -10,7 +10,7 @@ These connections are necessary in order to implement the interactive part of th
 </br>
 
 # About
-**Kinematic Harmonizer** is an audio effect plugin that .
+**Kinetic Harmonizer** is an audio effect plugin that allows the user to add a pitchshifted replica of the input audio to the signal. The pitchshift is determined by the LFO-controlled delay time the signal is processed by.
 
 The user is able to customize the parameters of the harmonizer through motion, which is captured by an accelerometer. In paricular the sensor we've used for this project is the analog MMA7361 Triple-Axis Accelerometer by Freescale. The analog signal is then converted to digital by the Arduino UNO in order to prepare it for processing by the plugin.
 
@@ -20,7 +20,7 @@ This is the **GUI** of the effect we've developed:
   <img src="images/gui_wip.png">
 </p>
 </br></br>
-The following block diagram shows the logical structure of the implementation of the effect in more detail:</br>
+The following block diagram shows the logical structure of the implementation of the effect in more detail:</br></br>
 
 <p align="center">
   <img src="images/KineticHarm.png"  width="95%" height="95%">
@@ -36,6 +36,6 @@ The main parameters of the plugin are:
 ## Interactive Control
 The accelerometer, with its three sensors, can send three distinct values in real times to control just as many parameters in the plugin:
 
-+ the **X Coordinate** controls 
-+ the **Y Coordinate** controls
-+ the **Z Coordinate** controls
++ the **X Coordinate** controls the semitone shift
++ the **Y Coordinate** controls the delay time
++ the **Z Coordinate** controls the feedback reintroduced in the delay line
