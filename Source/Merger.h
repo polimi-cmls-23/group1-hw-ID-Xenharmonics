@@ -1,0 +1,44 @@
+#pragma once
+#include <JuceHeader.h>
+#include "Parameters.h"
+
+class Merger
+{
+public:
+	Merger() {};
+	~Merger() {};
+
+	void prepareToPlay(double sr)
+	{
+		n.reset(sr, SMOOTHING_TIME_ST);
+		shift.reset(sr, SMOOTHING_TIME);
+	}
+
+	void setSemitones(float newValue)
+	{
+		semitones = newValue;
+		merge();
+	}
+
+	float getShift()
+	{
+		return shift.getCurrentValue();
+	}
+
+	
+private:
+
+	void merge()
+	{
+		//auto sum = semitones;
+		n.setTargetValue(semitones);
+		shift.setTargetValue(pow(2, semitones/12));
+	}
+
+	float semitones = DEFAULT_ST;
+	
+	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> n;
+	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> shift;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Merger)
+};
