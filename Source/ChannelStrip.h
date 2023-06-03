@@ -18,7 +18,7 @@ public:
 		updateState();
 	}
 
-	void processBlock(juce::AudioBuffer<float>& buffer, int inCh, int outCh)
+	void processBlock(AudioBuffer<float>& buffer, int inCh, int outCh)
 	{
 		auto numSamples = buffer.getNumSamples();
 
@@ -40,12 +40,12 @@ public:
 
     // START WIND FUNCTION
 
-	void moltiplicator(juce::AudioBuffer<float>& buffer, juce::AudioBuffer<float>& phasor, const int numSamples)
+	void moltiplicator(AudioBuffer<float>& buffer, AudioBuffer<float>& phasor, const int numSamples)
 	{
 		const int numCh = buffer.getNumChannels();
 		auto bufferData = buffer.getArrayOfWritePointers();
 		auto phasorData = phasor.getArrayOfReadPointers();
-		const float pi = juce::MathConstants<float>::pi;
+		const float pi = MathConstants<float>::pi;
 
 		for (int smp = 0; smp < numSamples; ++smp)
 		{
@@ -58,6 +58,24 @@ public:
 
 	// END WIND FUNCTION
 
+	void setMute(float newValue)
+	{
+		active = newValue < 0.5f;
+		updateState();
+	}
+
+	void setLevel(float newValue)
+	{
+		gain = Decibels::decibelsToGain(newValue);
+		updateState();
+	}
+
+	void setPan(float newValue)
+	{
+		pan = newValue / 100.0f;
+		updateState();
+	}
+
 
 private:
 
@@ -65,18 +83,18 @@ private:
 	{
 		auto l = active * gain;
 		monoGain.setTargetValue(l);
-		leftGain.setTargetValue(l * sqrt(0.5f));
-		rightGain.setTargetValue(l * sqrt(0.5f));
+		leftGain.setTargetValue(l * sqrt(1.0f - pan));
+		rightGain.setTargetValue(l * sqrt(pan));
 	}
 
 	bool active = 1 - DEFAULT_MUTE;
-	float gain = juce::Decibels::decibelsToGain(DEFAULT_LEVEL);
+	float gain = Decibels::decibelsToGain(DEFAULT_LEVEL);
 	float pan = DEFAULT_PAN;
 
 
-	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> leftGain;
-	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> rightGain;
-	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> monoGain;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> leftGain;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> rightGain;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> monoGain;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChannelStrip)
 };

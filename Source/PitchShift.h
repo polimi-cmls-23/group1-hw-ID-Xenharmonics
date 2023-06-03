@@ -22,6 +22,10 @@ public:
 
 		delay.setFeedback(DEFAULT_FB);
 
+		channelStripVoice.setMute(DEFAULT_MUTE);
+		channelStripVoice.setLevel(DEFAULT_LEVEL);
+		channelStripVoice.setPan(DEFAULT_PAN);
+
 		LFO.setFrequency(DEFAULT_FREQ);
 		LFO.setWaveform(DEFAULT_WF);
 		timeAdapter.setShift(1.0f);
@@ -52,6 +56,20 @@ public:
 		phasor.setSize(0, 0);
 	}
 
+	void setMute(float newValue)
+	{
+		channelStripVoice.setMute(newValue);
+	}
+
+	void setPan(float newValue)
+	{
+		channelStripVoice.setPan(newValue);
+	}
+
+	void setLevel(float newValue)
+	{
+		channelStripVoice.setLevel(newValue);
+	}
 
 	void setFeedback(float newValue)
 	{
@@ -71,7 +89,6 @@ public:
 		float ffreq = (merger.getShift() <= 1.0 ? maxFreq : maxFreq / merger.getShift());
 		filter.setFrequency(ffreq);
 	}
-
 
 
 	void processBlock(juce::AudioBuffer<float>& buffer, juce::AudioBuffer<float>& dualmono, int numSamples, int inCh, int outCh)
@@ -113,20 +130,23 @@ public:
 		
 	}
 	
-	juce::AudioBuffer<float> copyDualMono;
+	AudioBuffer<float> copyDualMono;
 
 
 
 private:
+
+
 
 	Filter filter;
 	Merger merger;
 	ChannelStrip channelStripVoice;
 	ModDelay delay;
 	NaiveOscillator LFO;
-	ParameterModulation timeAdapter;
-	juce::AudioBuffer<float> modulationSignal;
-	juce::AudioBuffer<float> phasor;
+	ParametrModulation timeAdapter;
+	AudioBuffer<float> modulationSignal;
+	AudioBuffer<float> phasor;
+
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PitchShift)
 };

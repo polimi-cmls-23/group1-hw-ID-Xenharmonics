@@ -33,7 +33,7 @@ public:
 	}
 
 
-	void getNextAudioBlock(juce::AudioBuffer<float>& buffer, const int numSamples)
+	void getNextAudioBlock(AudioBuffer<float>& buffer, const int numSamples)
 	{
 		const int numCh = buffer.getNumChannels();
 		auto bufferData = buffer.getArrayOfWritePointers();
@@ -76,6 +76,8 @@ public:
 		sampleValue += shift;
 		sampleValue -= static_cast<int>(sampleValue);
 
+		// -0.5 * cos(2*pi*phasor) + 0.5
+
 		return sampleValue;
 	}
 
@@ -86,16 +88,16 @@ private:
 	double samplePeriod = 1.0;
 	float currentPhase = 0.0f;
 	float phaseIncrement = 0.0f;
-	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Multiplicative> frequency;
+	SmoothedValue<float, ValueSmoothingTypes::Multiplicative> frequency;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NaiveOscillator)
 };
 
-class ParameterModulation
+class ParametrModulation
 {
 public:
-	ParameterModulation() {}
-	~ParameterModulation() {}
+	ParametrModulation() {}
+	~ParametrModulation() {}
 
 	void prepareToPlay(double sr)
 	{
@@ -114,7 +116,7 @@ public:
 		modAmount.setTargetValue(amount);
 	}
 
-	void processBlock(juce::AudioBuffer<float>& buffer, const int numSamples)
+	void processBlock(AudioBuffer<float>& buffer, const int numSamples)
 	{
 		auto bufferData = buffer.getArrayOfWritePointers();
 		auto numCh = buffer.getNumChannels();
@@ -122,8 +124,8 @@ public:
 		// Scalo la modulante tra 0 e 1
 		for (int ch = 0; ch < numCh; ++ch)
 		{
-			juce::FloatVectorOperations::add(bufferData[ch], 1.0, numSamples);
-			juce::FloatVectorOperations::multiply(bufferData[ch], 0.5f, numSamples);
+			FloatVectorOperations::add(bufferData[ch], 1.0, numSamples);
+			FloatVectorOperations::multiply(bufferData[ch], 0.5f, numSamples);
 		}
 
 		// Scalo la modulante tra 0 e la modulaziuone massima desiderata
@@ -140,19 +142,19 @@ public:
 			}
 		else
 			for (int ch = 0; ch < numCh; ++ch)
-				juce::FloatVectorOperations::add(bufferData[ch], parameter.getCurrentValue(), numSamples);
+				FloatVectorOperations::add(bufferData[ch], parameter.getCurrentValue(), numSamples);
 
 		// Controllo di essere dentro al tempo di delay massimo
 		for (int ch = 0; ch < numCh; ++ch)
-			juce::FloatVectorOperations::min(bufferData[ch], bufferData[ch], MAX_DELAY_TIME, numSamples);
+			FloatVectorOperations::min(bufferData[ch], bufferData[ch], MAX_DELAY_TIME, numSamples);
 
 	}
 
 private:
 
-	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> modAmount;
-	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> parameter;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> modAmount;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> parameter;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterModulation)
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParametrModulation)
 
 };

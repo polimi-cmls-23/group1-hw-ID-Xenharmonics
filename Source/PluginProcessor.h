@@ -11,9 +11,9 @@
 #include "Parameters.h"
 #include <string>
 
-class HarmonizerAudioProcessor  : public juce::AudioProcessor, public juce::AudioProcessorValueTreeState::Listener, 
-                               public OSCReceiver,
-                               public OSCReceiver::ListenerWithOSCAddress<OSCReceiver::MessageLoopCallback>
+class HarmonizerAudioProcessor : public juce::AudioProcessor, public juce::AudioProcessorValueTreeState::Listener,
+    public OSCReceiver,
+    public OSCReceiver::ListenerWithOSCAddress<OSCReceiver::MessageLoopCallback>
 {
 public:
     //==============================================================================
@@ -23,8 +23,8 @@ public:
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
-    
-    void oscMessageReceived (const OSCMessage &message) override;
+
+    void oscMessageReceived(const OSCMessage& message) override;
 
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 
@@ -52,18 +52,22 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-private:
-    void parameterChanged(const juce::String& paramID, float newValue) override;
+    Atomic<float> envelope;
+    Atomic<float> envelopeVoice1;
 
-    juce::AudioProcessorValueTreeState parameters;
+private:
+    void parameterChanged(const String& paramID, float newValue) override;
+
+    AudioProcessorValueTreeState parameters;
     ChannelStrip channelStripOriginal;
     DryWet drywetter;
 
     double sr = 1.0;
 
-    juce::AudioBuffer<float> dualmono;
+    AudioBuffer<float> dualmono;
 
     PitchShift pitchShift1;
+
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HarmonizerAudioProcessor)

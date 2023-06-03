@@ -20,6 +20,7 @@ public:
 		merge();
 	}
 
+
 	float getShift()
 	{
 		return shift.getCurrentValue();
@@ -30,15 +31,15 @@ private:
 
 	void merge()
 	{
-		//auto sum = semitones;
-		n.setTargetValue(semitones);
-		shift.setTargetValue(pow(2, semitones/12));
+		auto sum = semitones;
+		n.setTargetValue(sum);
+		shift.setTargetValue(pow(2, sum/12));
 	}
 
 	float semitones = DEFAULT_ST;
 	
-	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> n;
-	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> shift;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> n;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> shift;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Merger)
 };

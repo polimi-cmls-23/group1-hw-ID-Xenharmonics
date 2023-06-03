@@ -1,30 +1,45 @@
 #include "PluginProcessor.h"
 #include "Parameters.h"
 #include "HarmonizerEditor.h"
-#include <string>
 
 #define DEFAULT_FILTER 20000.0f
 #define DEFAULT_QFILTER 0.707f
 
 HarmonizerAudioProcessor::HarmonizerAudioProcessor()
-    : parameters(*this, nullptr, "APVTS", Parameters::createParameterLayout())
+    : AudioProcessor(BusesProperties()
+        .withInput("Input", juce::AudioChannelSet::stereo(), true)
+        .withOutput("Output", juce::AudioChannelSet::stereo(), true)
+    ), parameters(*this, nullptr, "APVTS", Parameters::createParameterLayout())
+
 {
+
+    parameters.addParameterListener(NAME_MUTE, this);
+    parameters.addParameterListener(NAME_LEVEL, this);
+    parameters.addParameterListener(NAME_PAN, this);
+
+    parameters.addParameterListener(NAME_MUTE1, this);
+    parameters.addParameterListener(NAME_LEVEL1, this);
+    parameters.addParameterListener(NAME_PAN1, this);
     parameters.addParameterListener(NAME_ST1, this);
     parameters.addParameterListener(NAME_DT1, this);
     parameters.addParameterListener(NAME_FB1, this);
-   
+       
+    parameters.addParameterListener(NAME_DW, this);
     parameters.addParameterListener(NAME_FREQ, this);
     parameters.addParameterListener(NAME_MOD, this);
+
+    channelStripOriginal.setMute(DEFAULT_MUTE);
+    channelStripOriginal.setLevel(DEFAULT_LEVEL);
+    channelStripOriginal.setPan(DEFAULT_PAN);
 
     drywetter.setDryWetRatio(DEFAULT_DW);
 
     pitchShift1.pitchSetParameters();
-    
+
     connect(8000);
-        if (! connect (8000))                       // [3]
-            std::cout << "Error" << std::endl;
-        OSCReceiver::addListener(this, "/data");
-    
+    if (!connect(8000))                       // [3]
+        std::cout << "Error" << std::endl;
+    OSCReceiver::addListener(this, "/data");
 }
 
 HarmonizerAudioProcessor::~HarmonizerAudioProcessor()
@@ -54,52 +69,48 @@ void HarmonizerAudioProcessor::releaseResources()
 }
 
 
-void HarmonizerAudioProcessor::oscMessageReceived (const OSCMessage &message)
+void HarmonizerAudioProcessor::oscMessageReceived(const OSCMessage& message)
+{
+
+    if (message[0].isString())
     {
-        
-        if (message[0].isString())
-        {
-            String theMessage = message[0].getString();
-            
-            int pos_x = theMessage.indexOf(" ");
-            String x_axis = theMessage.substring(0, pos_x);
-            String x_rest = theMessage.substring(pos_x + 1);
-            int pos_y = x_rest.indexOf(" ");
-            String y_axis = x_rest.substring(0, pos_y);
-            String y_rest = x_rest.substring(pos_y + 1);
-            String z_axis = y_rest;
-            
-            juce::NormalisableRange<float> range(0.0f, 5.0f, 0.01f);
-            juce::NormalisableRange<float> range2(-12.0f, 12.0f, 0.0f);
-            
-            float x = x_axis.getFloatValue();
-            x = range2.convertTo0to1(x);
-            float y = y_axis.getFloatValue();
-            y = range.convertTo0to1(y);
-            float z = z_axis.getFloatValue();
-            
-            /*int precision = 2;
-            // Round the float value to the desired precision
-            y = std::round(y * std::pow(10, precision)) / std::pow(10, precision);*/
-            
-            parameters.getParameter(NAME_ST1)->beginChangeGesture();
-            parameters.getParameter(NAME_ST1)->setValueNotifyingHost(x);
-            parameters.getParameter(NAME_ST1)->endChangeGesture();
-            
-            parameters.getParameter(NAME_DT1)->beginChangeGesture();
-            parameters.getParameter(NAME_DT1)->setValueNotifyingHost(y);
-            parameters.getParameter(NAME_DT1)->endChangeGesture();
-            
-            parameters.getParameter(NAME_FB1)->beginChangeGesture();
-            parameters.getParameter(NAME_FB1)->setValueNotifyingHost(z);
-            parameters.getParameter(NAME_FB1)->endChangeGesture();
-            
-            
-            std::cout << x << " " << y << " " << z << std::endl;
-            //
-        }
+        String theMessage = message[0].getString();
+
+        int pos_x = theMessage.indexOf(" ");
+        String x_axis = theMessage.substring(0, pos_x);
+        String x_rest = theMessage.substring(pos_x + 1);
+        int pos_y = x_rest.indexOf(" ");
+        String y_axis = x_rest.substring(0, pos_y);
+        String y_rest = x_rest.substring(pos_y + 1);
+        String z_axis = y_rest;
+
+        juce::NormalisableRange<float> range(0.0f, 5.0f, 0.01f);
+        juce::NormalisableRange<float> range2(-12.0f, 12.0f, 0.0f);
+
+        float x = x_axis.getFloatValue();
+        x = range2.convertTo0to1(x);
+        float y = y_axis.getFloatValue();
+        y = range.convertTo0to1(y);
+        float z = z_axis.getFloatValue();
+
+        parameters.getParameter(NAME_ST1)->beginChangeGesture();
+        parameters.getParameter(NAME_ST1)->setValueNotifyingHost(x);
+        parameters.getParameter(NAME_ST1)->endChangeGesture();
+
+        parameters.getParameter(NAME_DT1)->beginChangeGesture();
+        parameters.getParameter(NAME_DT1)->setValueNotifyingHost(y);
+        parameters.getParameter(NAME_DT1)->endChangeGesture();
+
+        parameters.getParameter(NAME_FB1)->beginChangeGesture();
+        parameters.getParameter(NAME_FB1)->setValueNotifyingHost(z);
+        parameters.getParameter(NAME_FB1)->endChangeGesture();
+
+        std::cout << x << " " << y << " " << z << std::endl;
 
     }
+
+}
+
 
 
 void HarmonizerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
@@ -125,10 +136,12 @@ void HarmonizerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         dualmono.applyGain(0.5f);
     }
 
-    
+    channelStripOriginal.processBlock(buffer, totalNumInputChannels, totalNumOutputChannels);
+    envelope.set(jmax(buffer.getMagnitude(0, buffer.getNumSamples()), envelope.get()));
 
     pitchShift1.processBlock(buffer, dualmono, numSamples, totalNumInputChannels, totalNumOutputChannels);
-    
+    envelopeVoice1.set(jmax(pitchShift1.copyDualMono.getMagnitude(0, pitchShift1.copyDualMono.getNumSamples()), envelopeVoice1.get()));
+
     // Miscelo il segnale pulito salvato in drywetter con quello processato da delay
     drywetter.merge(buffer);
 
@@ -145,20 +158,40 @@ juce::AudioProcessorEditor* HarmonizerAudioProcessor::createEditor()
 void HarmonizerAudioProcessor::getStateInformation(juce::MemoryBlock& destData)
 {
     auto state = parameters.copyState();
-    std::unique_ptr<juce::XmlElement> xml(state.createXml());
+    std::unique_ptr<XmlElement> xml(state.createXml());
     copyXmlToBinary(*xml, destData);
 }
 
 void HarmonizerAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
-    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+    std::unique_ptr<XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
     if (xmlState.get() != nullptr)
         if (xmlState->hasTagName(parameters.state.getType()))
-            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+            parameters.replaceState(ValueTree::fromXml(*xmlState));
 }
 
-void HarmonizerAudioProcessor::parameterChanged(const juce::String& paramID, float newValue)
+void HarmonizerAudioProcessor::parameterChanged(const String& paramID, float newValue)
 {
+    if (paramID == NAME_MUTE)
+        channelStripOriginal.setMute(newValue);
+
+    if (paramID == NAME_LEVEL)
+        channelStripOriginal.setLevel(newValue);
+
+    if (paramID == NAME_PAN)
+        channelStripOriginal.setPan(newValue);
+
+    if (paramID == NAME_DW)
+        drywetter.setDryWetRatio(newValue);
+
+    if (paramID == NAME_MUTE1)
+        pitchShift1.setMute(newValue);
+
+    if (paramID == NAME_LEVEL1)
+        pitchShift1.setLevel(newValue);
+
+    if (paramID == NAME_PAN1)
+        pitchShift1.setPan(newValue);
 
     if (paramID == NAME_DT1)
         pitchShift1.setDelay(newValue);

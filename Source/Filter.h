@@ -10,7 +10,7 @@ public:
 	Filter()
 	{
 		for (int f = 0; f < MAX_NUM_CH; ++f)
-			iirFilters.add(new juce::IIRFilter());
+			iirFilters.add(new IIRFilter());
 	}
 
 	~Filter() {}
@@ -24,7 +24,7 @@ public:
 		updateCoefficients();
 	}
 	
-	void processBlock(juce::AudioBuffer<float>& buffer, const int numSamples)
+	void processBlock(AudioBuffer<float>& buffer, const int numSamples)
 	{
 		for (int ch = buffer.getNumChannels(); --ch >= 0;)
 			iirFilters.getUnchecked(ch)->processSamples(buffer.getWritePointer(ch), numSamples);
@@ -32,7 +32,7 @@ public:
 
 	void setFrequency(float newValue)
 	{
-		frequency = juce::jmin(newValue, (float)(sampleRate * 0.499));
+		frequency = jmin(newValue, (float)(sampleRate * 0.499));
 		updateCoefficients();
 	}
 
@@ -52,7 +52,7 @@ private:
 
 	void updateCoefficients()
 	{
-		const juce::IIRCoefficients iirCoeffs = juce::IIRCoefficients::makeLowPass(sampleRate, frequency, quality);
+		const IIRCoefficients iirCoeffs = IIRCoefficients::makeLowPass(sampleRate, frequency, quality);
 
 		for (int f = iirFilters.size(); --f >= 0;)
 			iirFilters.getUnchecked(f)->setCoefficients(iirCoeffs);
@@ -62,5 +62,5 @@ private:
 	float quality = DEFAULT_QFILTER;
 	double sampleRate = 44100.0;
 
-	juce::OwnedArray<juce::IIRFilter> iirFilters;
+	OwnedArray<IIRFilter> iirFilters;
 };

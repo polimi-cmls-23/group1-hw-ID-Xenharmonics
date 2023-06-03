@@ -11,7 +11,7 @@ public:
 	void prepareToPlay(double sampleRate, int maxNumSamples)
 	{
 		sr = sampleRate;
-		memorySize = juce::roundToInt(MAX_DELAY_TIME * sampleRate) + maxNumSamples;
+		memorySize = roundToInt(MAX_DELAY_TIME * sampleRate) + maxNumSamples;
 		delayMemory.setSize(2, memorySize);
 		initialize();
 	}
@@ -22,7 +22,7 @@ public:
 		memorySize = 0;
 	}
 
-	void processBlock(juce::AudioBuffer<float>& buffer)
+	void processBlock(AudioBuffer<float>& buffer)
 	{
 		store(buffer);
 		moveDelayedTo(buffer);
@@ -33,7 +33,7 @@ protected:
 
 	virtual void initialize() = 0;
 
-	void store(const juce::AudioBuffer<float>& buffer)
+	void store(const AudioBuffer<float>& buffer)
 	{
 		const auto numInputSamples = buffer.getNumSamples();
 		const auto numChannels = buffer.getNumChannels();
@@ -53,7 +53,7 @@ protected:
 		}
 	}
 
-	virtual void moveDelayedTo(juce::AudioBuffer<float>& buffer) = 0;
+	virtual void moveDelayedTo(AudioBuffer<float>& buffer) = 0;
 
 	void updateWriteHead(int leap)
 	{
@@ -61,7 +61,7 @@ protected:
 		writeIndex %= memorySize;
 	}
 
-	juce::AudioBuffer<float> delayMemory;
+	AudioBuffer<float> delayMemory;
 	int memorySize = 0;
 	int writeIndex = 0;
 	double sr = 1;
@@ -80,7 +80,7 @@ public:
 		feedback.setTargetValue(newValue);
 	}
 
-	void processBlock(juce::AudioBuffer<float>& buffer, juce::AudioBuffer<float>& delayTimeBuffer)
+	void processBlock(AudioBuffer<float>& buffer, AudioBuffer<float>& delayTimeBuffer)
 	{
 		store(buffer);
 		moveDelayedTo(buffer, delayTimeBuffer);
@@ -89,13 +89,13 @@ public:
 
 private:
 
-	void moveDelayedTo(juce::AudioBuffer<float>& buffer) override
+	void moveDelayedTo(AudioBuffer<float>& buffer) override
 	{
 		// If you reach this assertion you're trying to use the wrong overload
 		jassertfalse;
 	}
 
-	void moveDelayedTo(juce::AudioBuffer<float>& buffer, juce::AudioBuffer<float>& delayTimeBuffer)
+	void moveDelayedTo(AudioBuffer<float>& buffer, AudioBuffer<float>& delayTimeBuffer)
 	{
 		const auto numOutputSamples = buffer.getNumSamples();
 		const auto numChannels = buffer.getNumChannels();
@@ -111,7 +111,7 @@ private:
 
 			for (int ch = 0; ch < numChannels; ++ch)
 			{
-				auto dt = delayTimeArray[juce::jmin(ch, numModChannels - 1)][smp];
+				auto dt = delayTimeArray[jmin(ch, numModChannels - 1)][smp];
 
 				auto actualWriteIndex = (writeIndex + smp) % memorySize;
 				auto actualReadIndex = memorySize + actualWriteIndex - (dt * sr);
@@ -143,7 +143,7 @@ private:
 
 	float oldSample[2] = { 0.0f, 0.0f };
 
-	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> feedback;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> feedback;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModDelay)
 };

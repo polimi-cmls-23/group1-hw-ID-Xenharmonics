@@ -15,7 +15,7 @@ public:
 		dryLevel.reset(sr, LEVEL_SMOOTHING_TIME);
 		wetLevel.reset(sr, LEVEL_SMOOTHING_TIME);
 
-		setDryWetRatio(1.0f);
+		setDryWetRatio(dryWetRatio);
 	}
 
 	void releaseResources()
@@ -23,13 +23,13 @@ public:
 		drySignal.setSize(0, 0);
 	}
 
-	void setDry(const juce::AudioBuffer<float>& buffer)
+	void setDry(const AudioBuffer<float>& buffer)
 	{
 		for (int ch = buffer.getNumChannels(); --ch >= 0; )
 			drySignal.copyFrom(ch, 0, buffer, ch, 0, buffer.getNumSamples());
 	}
 
-	void merge(juce::AudioBuffer<float>& buffer)
+	void merge(AudioBuffer<float>& buffer)
 	{
 		auto numSamples = buffer.getNumSamples();
 		wetLevel.applyGain(buffer, numSamples);
@@ -50,11 +50,11 @@ public:
 
 private:
 
-	float dryWetRatio = 1.0f;
-	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> dryLevel;
-	juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> wetLevel;
+	float dryWetRatio = 0.5f;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> dryLevel;
+	SmoothedValue<float, ValueSmoothingTypes::Linear> wetLevel;
 
-	juce::AudioBuffer<float> drySignal;
+	AudioBuffer<float> drySignal;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DryWet)
 };

@@ -22,9 +22,6 @@
 #ifndef  JucePlugin_Build_AUv3
  #define JucePlugin_Build_AUv3             0
 #endif
-#ifndef  JucePlugin_Build_RTAS
- #define JucePlugin_Build_RTAS             0
-#endif
 #ifndef  JucePlugin_Build_AAX
  #define JucePlugin_Build_AAX              0
 #endif
@@ -34,20 +31,26 @@
 #ifndef  JucePlugin_Build_Unity
  #define JucePlugin_Build_Unity            0
 #endif
+#ifndef  JucePlugin_Build_LV2
+ #define JucePlugin_Build_LV2              0
+#endif
 #ifndef  JucePlugin_Enable_IAA
  #define JucePlugin_Enable_IAA             0
 #endif
+#ifndef  JucePlugin_Enable_ARA
+ #define JucePlugin_Enable_ARA             0
+#endif
 #ifndef  JucePlugin_Name
- #define JucePlugin_Name                   "Harmonizer"
+ #define JucePlugin_Name                   "Harmonizer2"
 #endif
 #ifndef  JucePlugin_Desc
- #define JucePlugin_Desc                   "Harmonizer"
+ #define JucePlugin_Desc                   "Harmonizer2"
 #endif
 #ifndef  JucePlugin_Manufacturer
  #define JucePlugin_Manufacturer           "yourcompany"
 #endif
 #ifndef  JucePlugin_ManufacturerWebsite
- #define JucePlugin_ManufacturerWebsite    ""
+ #define JucePlugin_ManufacturerWebsite    "www.yourcompany.com"
 #endif
 #ifndef  JucePlugin_ManufacturerEmail
  #define JucePlugin_ManufacturerEmail      ""
@@ -56,7 +59,7 @@
  #define JucePlugin_ManufacturerCode       0x4d616e75
 #endif
 #ifndef  JucePlugin_PluginCode
- #define JucePlugin_PluginCode             0x55756a77
+ #define JucePlugin_PluginCode             0x45696f6f
 #endif
 #ifndef  JucePlugin_IsSynth
  #define JucePlugin_IsSynth                0
@@ -98,34 +101,19 @@
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AUExportPrefix
- #define JucePlugin_AUExportPrefix         HarmonizerAU
+ #define JucePlugin_AUExportPrefix         Harmonizer2AU
 #endif
 #ifndef  JucePlugin_AUExportPrefixQuoted
- #define JucePlugin_AUExportPrefixQuoted   "HarmonizerAU"
+ #define JucePlugin_AUExportPrefixQuoted   "Harmonizer2AU"
 #endif
 #ifndef  JucePlugin_AUManufacturerCode
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode
 #endif
 #ifndef  JucePlugin_CFBundleIdentifier
- #define JucePlugin_CFBundleIdentifier     com.yourcompany.Harmonizer
-#endif
-#ifndef  JucePlugin_RTASCategory
- #define JucePlugin_RTASCategory           0
-#endif
-#ifndef  JucePlugin_RTASManufacturerCode
- #define JucePlugin_RTASManufacturerCode   JucePlugin_ManufacturerCode
-#endif
-#ifndef  JucePlugin_RTASProductId
- #define JucePlugin_RTASProductId          JucePlugin_PluginCode
-#endif
-#ifndef  JucePlugin_RTASDisableBypass
- #define JucePlugin_RTASDisableBypass      0
-#endif
-#ifndef  JucePlugin_RTASDisableMultiMono
- #define JucePlugin_RTASDisableMultiMono   0
+ #define JucePlugin_CFBundleIdentifier     com.yourcompany.Harmonizer2
 #endif
 #ifndef  JucePlugin_AAXIdentifier
- #define JucePlugin_AAXIdentifier          com.yourcompany.Harmonizer
+ #define JucePlugin_AAXIdentifier          com.yourcompany.Harmonizer2
 #endif
 #ifndef  JucePlugin_AAXManufacturerCode
  #define JucePlugin_AAXManufacturerCode    JucePlugin_ManufacturerCode
@@ -149,13 +137,28 @@
  #define JucePlugin_IAASubType             JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_IAAName
- #define JucePlugin_IAAName                "yourcompany: Harmonizer"
+ #define JucePlugin_IAAName                "yourcompany: Harmonizer2"
 #endif
 #ifndef  JucePlugin_VSTNumMidiInputs
  #define JucePlugin_VSTNumMidiInputs       16
 #endif
 #ifndef  JucePlugin_VSTNumMidiOutputs
  #define JucePlugin_VSTNumMidiOutputs      16
+#endif
+#ifndef  JucePlugin_ARAContentTypes
+ #define JucePlugin_ARAContentTypes        0
+#endif
+#ifndef  JucePlugin_ARATransformationFlags
+ #define JucePlugin_ARATransformationFlags  0
+#endif
+#ifndef  JucePlugin_ARAFactoryID
+ #define JucePlugin_ARAFactoryID           "com.yourcompany.Harmonizer2.factory"
+#endif
+#ifndef  JucePlugin_ARADocumentArchiveID
+ #define JucePlugin_ARADocumentArchiveID   "com.yourcompany.Harmonizer2.aradocumentarchive.1.0.0"
+#endif
+#ifndef  JucePlugin_ARACompatibleArchiveIDs
+ #define JucePlugin_ARACompatibleArchiveIDs  ""
 #endif
 #ifndef  JucePlugin_MaxNumInputChannels
  #define JucePlugin_MaxNumInputChannels    2
