@@ -10,7 +10,7 @@ These connections are necessary in order to implement the interactive part of th
 
 </br></br>
 <p align="center">
-  <img src="images/processing_screenshot.png"  width="65%" height="65%">
+  <img src="Processing_HW3/Kinetic_harm processing demo.gif"  width="65%" height="65%">
 </p>
 </br>
 
