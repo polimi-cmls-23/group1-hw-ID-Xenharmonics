@@ -7,8 +7,11 @@ The **JUCE** plugin we've developed for the Interaction Design project is **Kine
 
 </br>
 These connections are necessary in order to implement the interactive part of this project.
-</br>
 
+<p align="center">
+  <img src="images/processing_screenshot.png"  width="65%" height="65%">
+</p>
+</br>
 # About
 **Kinetic Harmonizer** is an audio effect plugin that allows the user to add a pitchshifted replica of the input audio to the signal. The pitchshift is determined by the LFO-controlled delay time the signal is processed by.
 
