@@ -17,7 +17,7 @@ The user is able to customize the parameters of the harmonizer through motion, w
 This is the **GUI** of the effect we've developed:
 
 <p align="center">
-  <img src="images/gui_wip.png">
+  <img src="images/plugin screenshot.png">
 </p>
 </br></br>
 The following block diagram shows the logical structure of the implementation of the effect in more detail:</br></br>
