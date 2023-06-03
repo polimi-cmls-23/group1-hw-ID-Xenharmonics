@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="EIOOVx" name="Harmonizer2" projectType="audioplug" displaySplashScreen="1"
-              jucerFormatVersion="1" pluginChannelConfigs="{1,1},{2,2}" defines="JUCE_MODAL_LOOPS_PERMITTED = 1">
-  <MAINGROUP id="Ve1fLz" name="Harmonizer2">
+<JUCERPROJECT id="EIOOVx" name="Kinetic Harmonizer" projectType="audioplug"
+              displaySplashScreen="1" jucerFormatVersion="1" pluginChannelConfigs="{1,1},{2,2}"
+              defines="JUCE_MODAL_LOOPS_PERMITTED = 1" companyName="Xenharmonics"
+              bundleIdentifier="com.xenharmonics.KineticHarmonizer" pluginManufacturer="Xenharmonics"
+              pluginManufacturerCode="XENS" pluginCode="KINH">
+  <MAINGROUP id="Ve1fLz" name="Kinetic Harmonizer">
     <GROUP id="{3DE9BCDA-4F52-2F6D-F9E6-DC4E52176063}" name="Source">
       <FILE id="q7kil0" name="Parameters.h" compile="0" resource="0" file="Source/Parameters.h"/>
       <FILE id="PVHape" name="PluginProcessor.cpp" compile="1" resource="0"
