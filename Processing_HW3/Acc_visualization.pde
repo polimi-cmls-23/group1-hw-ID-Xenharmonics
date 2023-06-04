@@ -21,7 +21,7 @@ void setup() {
   // Set serial port
   port = new Serial(this, "/dev/cu.usbmodem1421", 9600);
   
-  // Create OscP5 object for receiving OSC messages
+  // Create OscP5 object
   oscP5 = new OscP5(this, 8001);
   
   // Set the remote address and port for sending OSC messages
@@ -42,6 +42,7 @@ void draw() {
   dr = roll - prevRoll;
   prevPitch += dp*easing;
   prevRoll += dr*easing;
+
   // 3D 0bject
   textSize(30);  
   fill(132,33,123);
@@ -58,12 +59,9 @@ void draw() {
       
         if (items.length > 4) { 
                 
-          // Compose the 3 axis parameters
-          String axis_parameters = items[0]+ " " + items[1]+ " " +  items[2]+ " ";
-        
           // Create the OSC Message
           OscMessage message = new OscMessage("/data");
-          message.add(axis_parameters);
+          message.add(items[3]+ " " + items[4]);
               
           // Send the OSC message to the remote location
           oscP5.send(message, myRemoteLocation);
@@ -71,6 +69,7 @@ void draw() {
           // Roll,Pitch in degrees
           roll = float(items[3]);
           pitch = float(items[4]);
+          
          }
      }
   }
