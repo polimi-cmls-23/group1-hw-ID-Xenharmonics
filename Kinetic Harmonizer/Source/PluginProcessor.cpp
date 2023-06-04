@@ -68,7 +68,6 @@ void HarmonizerAudioProcessor::releaseResources()
     pitchShift1.releaseResources();
 }
 
-
 void HarmonizerAudioProcessor::oscMessageReceived(const OSCMessage& message)
 {
 
@@ -76,36 +75,29 @@ void HarmonizerAudioProcessor::oscMessageReceived(const OSCMessage& message)
     {
         String theMessage = message[0].getString();
 
+        juce::NormalisableRange<float> range(0.0f, 5.0f, 0.001f);
+        juce::NormalisableRange<float> range2(-12.0f, 12.0f, 0.0f);
+        juce::NormalisableRange<float> range3(0.0f, 1.0f, 1.0f);
+
         int pos_x = theMessage.indexOf(" ");
         String x_axis = theMessage.substring(0, pos_x);
         String x_rest = theMessage.substring(pos_x + 1);
-        int pos_y = x_rest.indexOf(" ");
-        String y_axis = x_rest.substring(0, pos_y);
-        String y_rest = x_rest.substring(pos_y + 1);
-        String z_axis = y_rest;
-
-        juce::NormalisableRange<float> range(0.0f, 5.0f, 0.01f);
-        juce::NormalisableRange<float> range2(-12.0f, 12.0f, 0.0f);
-
+        String z_axis = x_rest;
+        
         float x = x_axis.getFloatValue();
+        x = mapf(x, -90.0f, 90.0f, -12.0f, 12.0f);
         x = range2.convertTo0to1(x);
-        float y = y_axis.getFloatValue();
-        y = range.convertTo0to1(y);
         float z = z_axis.getFloatValue();
+        z = mapf(z, -90.0f, 90.0f, 0.0f, 1.0f);
+        z = range3.convertTo0to1(z);
 
         parameters.getParameter(NAME_ST1)->beginChangeGesture();
         parameters.getParameter(NAME_ST1)->setValueNotifyingHost(x);
         parameters.getParameter(NAME_ST1)->endChangeGesture();
-
-        parameters.getParameter(NAME_DT1)->beginChangeGesture();
-        parameters.getParameter(NAME_DT1)->setValueNotifyingHost(y);
-        parameters.getParameter(NAME_DT1)->endChangeGesture();
-
-        parameters.getParameter(NAME_FB1)->beginChangeGesture();
-        parameters.getParameter(NAME_FB1)->setValueNotifyingHost(z);
-        parameters.getParameter(NAME_FB1)->endChangeGesture();
-
-        std::cout << x << " " << y << " " << z << std::endl;
+        
+        parameters.getParameter(NAME_DW)->beginChangeGesture();
+        parameters.getParameter(NAME_DW)->setValueNotifyingHost(z);
+        parameters.getParameter(NAME_DW)->endChangeGesture();
 
     }
 
@@ -212,6 +204,8 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new HarmonizerAudioProcessor();
 }
+
+
 
 
 
