@@ -26,12 +26,11 @@ void loop(){
   float gVal[3] = {0.0};
 
   getRawVals(raw);
-  getAngles(angles,raw);
   getGValues(gVal, raw); 
 
-  xAcc = mapf(gVal[0]*7, -1.5, 1.5, -1.0, 1.0); 
-  yAcc = mapf(gVal[1]*5, -1.5, 1.5, 0.0f, 5.0f); 
-  zAcc = mapf(gVal[2], -1.5, 1.5, 0.0, 1.0); 
+  xAcc = mapf(raw[0], 0, 1023, -1.0, 1.0); 
+  yAcc = mapf(raw[1], 0, 1023, 0.0f, 5.0f); 
+  zAcc = mapf(raw[2], 0, 1023, 0.0, 1.0); 
 
   Serial.print(xAcc); 
   Serial.print(" ");
@@ -68,22 +67,6 @@ void getRawVals(int rawVals[]){
   for(int i=0; i<3; i++){
     rawVals[i] = readMMA7361(axisPin[i]);
   }
-}
-
-void getAngles(int angleArray[], int rawArray[]){
-  bool positive = true;
-  for(int i=0; i<3; i++){
-    int diff = rawArray[i] - startVal[i];
-    positive = (diff>=0);
-    diff = abs(diff);
-    if(diff > unitsPerG){
-      diff = unitsPerG;
-    }
-    angleArray[i] = int((asin(diff*1.0/unitsPerG))*57.296);
-    if(positive==false){
-      angleArray[i] = -angleArray[i];
-    }
-  } 
 }
 
 int readMMA7361(int pin){
